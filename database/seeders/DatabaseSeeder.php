@@ -2,12 +2,20 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Seeder intentionally left blank. Use specific seeders when needed.
+        User::firstOrCreate([
+            'email' => 'admin@kuet.ems',
+        ], [
+            'name' => 'KUET Admin',
+            'password' => Hash::make('admin1234'),
+            'role' => 'admin',
+        ]);
     }
 }

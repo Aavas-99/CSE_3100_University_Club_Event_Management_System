@@ -24,10 +24,10 @@
                     </label>
                     <a href="#" class="text-sm text-kuet-700 font-medium hover:underline">Forgot Password?</a>
                 </div>
-                <button type="button" class="btn btn-primary w-full">Sign In</button>
+                <a href="{{ route('login') }}" class="btn btn-primary w-full">Sign In</a>
             </form>
             <div class="text-center mt-6 pt-6 border-t border-slate-100">
-                <p class="text-sm text-slate-500">Don't have an account? <a href="#" class="text-kuet-700 font-medium hover:underline">Contact Admin</a></p>
+                <p class="text-sm text-slate-500">Don't have an account? <a href="{{ route('register') }}" class="text-kuet-700 font-medium hover:underline">Create one</a></p>
             </div>
         </div>
     </div>

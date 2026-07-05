@@ -35,7 +35,18 @@
 
     @include('partials.navbar')
 
-    @yield('content')
+    <main class="pt-28">
+        @unless(request()->routeIs('home') || request()->is('/'))
+            <div class="max-w-7xl mx-auto px-6 mb-6">
+                <button type="button" onclick="history.back()" class="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </button>
+            </div>
+        @endunless
+
+        @yield('content')
+    </main>
 
     @include('partials.footer')
 

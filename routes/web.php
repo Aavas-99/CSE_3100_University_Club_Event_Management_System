@@ -47,7 +47,14 @@ Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
 Route::post('/events', [EventController::class, 'store'])->name('events.store');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{event}/register', [RegistrationController::class, 'create'])->name('registrations.create');
+Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('registrations.store');
+
+Route::post('/registrations/{registration}/approve', [RegistrationController::class, 'approve'])->name('registrations.approve');
+Route::post('/registrations/{registration}/reject', [RegistrationController::class, 'reject'])->name('registrations.reject');
+
+Route::get('/admin/events/pending', [EventController::class, 'pendingApproval'])->name('admin.events.pending');
+Route::post('/admin/events/{event}/approve', [EventController::class, 'approve'])->name('admin.events.approve');
+Route::post('/admin/events/{event}/reject', [EventController::class, 'reject'])->name('admin.events.reject');
 
 Route::get('/clubs', [ClubController::class, 'index'])->name('clubs.index');
-
-Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('registrations.store');

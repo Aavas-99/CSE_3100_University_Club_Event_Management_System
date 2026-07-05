@@ -13,17 +13,29 @@
 
         <!-- Nav Links -->
         <div class="hidden md:flex items-center gap-1">
-            <a href="#hero" class="nav-link active">Home</a>
-            <a href="#about" class="nav-link">About</a>
-            <a href="#features" class="nav-link">Features</a>
-            <a href="#roles" class="nav-link">Roles</a>
-            <a href="#contact" class="nav-link">Contact</a>
+            <a href="{{ route('home') }}#hero" class="nav-link active">Home</a>
+            <a href="{{ route('home') }}#about" class="nav-link">About</a>
+            <a href="{{ route('home') }}#features" class="nav-link">Features</a>
+            <a href="{{ route('home') }}#roles" class="nav-link">Roles</a>
+            <a href="{{ route('home') }}#contact" class="nav-link">Contact</a>
         </div>
 
         <!-- Auth Buttons -->
         <div class="flex items-center gap-3">
-              <a href="{{ route('login') }}" class="btn btn-ghost">Sign In</a>
-              <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+            @auth
+                @if(request()->routeIs('dashboard'))
+                    <a href="{{ route('profile.edit') }}" class="btn btn-ghost">Edit Profile</a>
+                @else
+                    <a href="{{ route('dashboard') }}" class="btn btn-ghost">Dashboard</a>
+                @endif
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">Sign Out</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-ghost">Sign In</a>
+                <a href="{{ route('register') }}" class="btn btn-primary">Get Started</a>
+            @endauth
         </div>
 
     </div>

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Club;
+use App\Models\Registration;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -50,5 +52,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
+
+    public function organizerClub()
+    {
+        return $this->hasOne(Club::class, 'organizer_id');
     }
 }

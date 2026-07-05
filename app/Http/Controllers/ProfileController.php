@@ -16,6 +16,10 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
+        if ($user->role === 'admin') {
+            return view('admin.profile.edit', compact('user'));
+        }
+
         return view('profile.edit', compact('user'));
     }
 
@@ -27,16 +31,25 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
-        $data = $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'student_id' => ['nullable', 'string', 'max:50'],
-            'department' => ['nullable', 'string', 'max:100'],
-            'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['nullable', 'confirmed', 'min:8'],
-        ]);
+        ];
 
-        if (!empty($data['password'])) {
-            $user->password = Hash::make($data['password']);
+        if ($user->role !== 'admin') {
+            $rules = array_merge($rules, [
+                'student_id' => ['nullable', 'string', 'max:50'],
+                'department' => ['nullable', 'string', 'max:100'],
+                'phone' => ['nullable', 'string', 'max:20'],
+            ]);
+        }
+
+        $data = $request->validate($rules);
+
+        if (!blank($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
 
         $user->fill($data);

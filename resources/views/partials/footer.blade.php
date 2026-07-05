@@ -14,10 +14,10 @@
             <div>
                 <h4 class="font-semibold mb-4 text-lg">Quick Links</h4>
                 <ul class="space-y-3">
-                    <li><a href="#hero" class="text-slate-400 hover:text-white transition-colors">Home</a></li>
-                    <li><a href="#about" class="text-slate-400 hover:text-white transition-colors">About</a></li>
-                    <li><a href="#features" class="text-slate-400 hover:text-white transition-colors">Features</a></li>
-                    <li><a href="#roles" class="text-slate-400 hover:text-white transition-colors">Roles</a></li>
+                    <li><a href="{{ route('home') }}#hero" class="text-slate-400 hover:text-white transition-colors">Home</a></li>
+                    <li><a href="{{ route('home') }}#about" class="text-slate-400 hover:text-white transition-colors">About</a></li>
+                    <li><a href="{{ route('home') }}#features" class="text-slate-400 hover:text-white transition-colors">Features</a></li>
+                    <li><a href="{{ route('home') }}#roles" class="text-slate-400 hover:text-white transition-colors">Roles</a></li>
                 </ul>
             </div>
         </div>

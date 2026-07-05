@@ -19,6 +19,7 @@
             <div class="flex flex-col lg:flex-row items-center gap-16 min-h-[calc(100vh-5rem)] py-20">
                 <!-- Left Content -->
                 <div class="hero-content lg:w-1/2">
+                    <div class="hero-badge">KUET EMS</div>
                     <h1 class="hero-title">
 
                         <span class="block">Discover & Manage</span>

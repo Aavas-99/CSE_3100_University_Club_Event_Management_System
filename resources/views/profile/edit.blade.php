@@ -1,47 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile | KUET EMS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-slate-100">
-    <div class="max-w-3xl mx-auto p-6">
-        <h1 class="text-2xl font-bold mb-4">Edit Profile</h1>
+@extends('layouts.app')
+
+@section('title', 'Edit Profile | KUET EMS')
+
+@section('content')
+<div class="bg-slate-100 py-12">
+    <div class="max-w-3xl mx-auto px-6">
         @include('partials.flash')
-        <form method="POST" action="{{ url('/profile') }}">
-            @csrf
-            <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm">Full name</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="mt-1 w-full rounded-lg border px-3 py-2">
-                </div>
-                <div>
-                    <label class="block text-sm">Student ID</label>
-                    <input type="text" name="student_id" value="{{ old('student_id', $user->student_id) }}" class="mt-1 w-full rounded-lg border px-3 py-2">
-                </div>
-                <div>
-                    <label class="block text-sm">Department</label>
-                    <input type="text" name="department" value="{{ old('department', $user->department) }}" class="mt-1 w-full rounded-lg border px-3 py-2">
-                </div>
-                <div>
-                    <label class="block text-sm">Phone</label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="mt-1 w-full rounded-lg border px-3 py-2">
-                </div>
-                <div>
-                    <label class="block text-sm">New Password (leave blank to keep)</label>
-                    <input type="password" name="password" class="mt-1 w-full rounded-lg border px-3 py-2">
-                </div>
-                <div>
-                    <label class="block text-sm">Confirm Password</label>
-                    <input type="password" name="password_confirmation" class="mt-1 w-full rounded-lg border px-3 py-2">
-                </div>
+        <div class="rounded-3xl bg-white p-8 shadow-sm border border-slate-200">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900">Edit Profile</h1>
+                <p class="mt-2 text-slate-500">Update your details. Leave password fields blank to keep the current password.</p>
             </div>
-            <div class="mt-4">
-                <button type="submit" class="rounded-lg bg-green-700 px-4 py-2 text-white">Update Profile</button>
-            </div>
-        </form>
+            <form method="POST" action="{{ route('profile.update') }}" class="space-y-6">
+                @csrf
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700">Full name</label>
+                        <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700">Student ID</label>
+                        <input type="text" name="student_id" value="{{ old('student_id', $user->student_id) }}" class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700">Department</label>
+                        <input type="text" name="department" value="{{ old('department', $user->department) }}" class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700">Phone</label>
+                        <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+                    </div>
+                </div>
+
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700">New Password</label>
+                        <input type="password" name="password" class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700">Confirm Password</label>
+                        <input type="password" name="password_confirmation" class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-kuet-700 px-6 py-3 text-white shadow-lg shadow-kuet-500/20 hover:bg-kuet-800">Update Profile</button>
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center rounded-2xl bg-kuet-700 px-6 py-3 text-white shadow-lg shadow-kuet-500/20 hover:bg-kuet-800">Return to dashboard</a>
+                </div>
+            </form>
+        </div>
     </div>
-</body>
-</html>
+</div>
+@endsection
