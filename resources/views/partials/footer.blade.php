@@ -1,28 +1,87 @@
-<footer class="bg-kuet-950 text-white py-16">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="grid md:grid-cols-3 gap-12 mb-12">
-            <div class="col-span-1">
-                <div class="flex items-center gap-3 mb-4">
-                    <img src="{{ asset('images/kuet-logo.png') }}" alt="KUET Logo" class="h-10 w-auto">
-                    <span class="text-xl font-bold">KUET EMS</span>
+<footer class="bg-slate-900 text-white relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-kuet-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+            <!-- Brand -->
+            <div class="lg:col-span-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <img src="{{ asset('images/kuet-logo.png') }}" alt="KUET" class="h-12 w-auto rounded-lg bg-white/10 p-1">
+                    <div>
+                        <h3 class="text-xl font-bold">KUET EMS</h3>
+                        <p class="text-xs text-slate-400">Event Management System</p>
+                    </div>
                 </div>
-                <p class="text-slate-400 leading-relaxed max-w-md">
-                    The official Event Management System for Khulna University of Engineering & Technology. 
-                    Connecting students with campus events since 2026.
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                    The official platform for managing and discovering events at Khulna University of Engineering & Technology.
                 </p>
+                <div class="flex gap-3">
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
+                        <i class="fab fa-facebook-f text-sm"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
+                        <i class="fab fa-twitter text-sm"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
+                        <i class="fab fa-linkedin-in text-sm"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
             </div>
+            
+            <!-- Quick Links -->
             <div>
-                <h4 class="font-semibold mb-4 text-lg">Quick Links</h4>
+                <h4 class="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Platform</h4>
                 <ul class="space-y-3">
-                    <li><a href="{{ route('home') }}#hero" class="text-slate-400 hover:text-white transition-colors">Home</a></li>
-                    <li><a href="{{ route('home') }}#about" class="text-slate-400 hover:text-white transition-colors">About</a></li>
-                    <li><a href="{{ route('home') }}#features" class="text-slate-400 hover:text-white transition-colors">Features</a></li>
-                    <li><a href="{{ route('home') }}#roles" class="text-slate-400 hover:text-white transition-colors">Roles</a></li>
+                    <li><a href="{{ route('events.index') }}" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Browse Events</a></li>
+                    <li><a href="{{ route('clubs.index') }}" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Clubs</a></li>
+                    <li><a href="{{ route('register') }}" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Register</a></li>
+                    <li><a href="{{ route('login') }}" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Sign In</a></li>
+                </ul>
+            </div>
+            
+            <!-- Resources -->
+            <div>
+                <h4 class="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Resources</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Help Center</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">API Documentation</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Terms of Service</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contact -->
+            <div>
+                <h4 class="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Contact</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-3 text-slate-400 text-sm">
+                        <i class="fas fa-map-marker-alt mt-1 text-kuet-500"></i>
+                        <span>KUET, Fulbarigate, Khulna-9203</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-slate-400 text-sm">
+                        <i class="fas fa-phone text-kuet-500"></i>
+                        <span>+880 41-769468</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-slate-400 text-sm">
+                        <i class="fas fa-envelope text-kuet-500"></i>
+                        <span>support@kuet.ac.bd</span>
+                    </li>
                 </ul>
             </div>
         </div>
-        <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-slate-500 text-sm">&copy; 2026 Khulna University of Engineering & Technology. All rights reserved.</p>
+        
+        <div class="mt-12 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-slate-500 text-sm">
+                &copy; {{ date('Y') }} Khulna University of Engineering & Technology. All rights reserved.
+            </p>
+            <p class="text-slate-600 text-xs">
+                Designed & Developed with <i class="fas fa-heart text-red-500 mx-1"></i> for KUET
+            </p>
         </div>
     </div>
 </footer>
