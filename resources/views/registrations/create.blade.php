@@ -1,62 +1,154 @@
 @extends('layouts.app')
 
-@section('title', 'Register for Event | KUET EMS')
+@section('title', 'Register for ' . $event->title . ' | KUET EMS')
 
 @section('content')
-<div class="min-h-screen bg-slate-100 py-12">
-    <div class="max-w-4xl mx-auto px-6">
-        <div class="rounded-3xl bg-white shadow-xl p-8">
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-slate-900">Register for "{{ $event->title }}"</h1>
-                <p class="text-slate-500">Complete your registration request and share the required details with the organizer.</p>
-            </div>
-
-            @include('partials.flash')
-
-            <div class="grid gap-6 md:grid-cols-2 mb-6">
-                <div class="rounded-3xl bg-slate-50 p-6 border border-slate-200">
-                    <h2 class="text-lg font-semibold text-slate-800 mb-3">Event Summary</h2>
-                    <p class="text-slate-600">{{ $event->description }}</p>
-                    <div class="mt-4 space-y-2 text-sm text-slate-600">
-                        <div><strong>Date:</strong> {{ $event->event_date }}</div>
-                        <div><strong>Time:</strong> {{ $event->start_time }} - {{ $event->end_time }}</div>
-                        <div><strong>Venue:</strong> {{ $event->venue }}</div>
-                        <div><strong>Club:</strong> {{ $event->club->name }}</div>
-                        <div><strong>Seats left:</strong> {{ $event->remaining_seats }}</div>
-                    </div>
+<div class="min-h-screen bg-slate-50 pb-16">
+    <!-- Page Header -->
+    <div class="bg-white border-b border-slate-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-kuet-100 flex items-center justify-center text-kuet-600">
+                    <i class="fas fa-ticket-alt text-lg"></i>
                 </div>
-                <div class="rounded-3xl bg-slate-50 p-6 border border-slate-200">
-                    <h2 class="text-lg font-semibold text-slate-800 mb-3">Your Details</h2>
-                    <div class="space-y-2 text-sm text-slate-600">
-                        <div><strong>Name:</strong> {{ $user->name }}</div>
-                        <div><strong>Email:</strong> {{ $user->email }}</div>
-                        <div><strong>Student ID:</strong> {{ $user->student_id }}</div>
-                        <div><strong>Department:</strong> {{ $user->department ?? 'Not provided' }}</div>
-                        <div><strong>Phone:</strong> {{ $user->phone ?? 'Not provided' }}</div>
-                    </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Event Registration</h1>
+                    <p class="text-slate-500 text-sm mt-1">Complete your registration for {{ $event->title }}</p>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <form action="{{ route('registrations.store', $event) }}" method="POST" class="space-y-6">
-                @csrf
-                <div class="grid gap-6 md:grid-cols-2">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700">Department</label>
-                        <input type="text" name="department" value="{{ old('department', $user->department) }}" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @include('partials.flash')
+        
+        <div class="grid lg:grid-cols-5 gap-8">
+            <!-- Event Summary -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                    <div class="h-32 bg-gradient-to-br from-kuet-600 to-kuet-800 relative">
+                        <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.4%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold backdrop-blur-sm">
+                                {{ $event->event_type }}
+                            </span>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700">Phone Number</label>
-                        <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus:border-kuet-500 focus:ring-kuet-500">
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">{{ $event->title }}</h3>
+                        <p class="text-slate-500 text-sm mb-4">{{ Str::limit($event->description, 120) }}</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg bg-kuet-50 flex items-center justify-center text-kuet-600">
+                                    <i class="fas fa-building text-xs"></i>
+                                </div>
+                                <span class="text-slate-600">{{ $event->club->name }}</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                    <i class="fas fa-calendar text-xs"></i>
+                                </div>
+                                <span class="text-slate-600">{{ $event->event_date->format('M d, Y') }}</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
+                                    <i class="fas fa-map-marker-alt text-xs"></i>
+                                </div>
+                                <span class="text-slate-600">{{ $event->venue }}</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                                    <i class="fas fa-chair text-xs"></i>
+                                </div>
+                                <span class="{{ $event->remaining_seats > 10 ? 'text-emerald-600' : 'text-amber-600' }} font-semibold">
+                                    {{ $event->remaining_seats }} seats remaining
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="rounded-3xl bg-slate-50 p-6 border border-slate-200">
-                    <h2 class="text-lg font-semibold text-slate-800 mb-3">Submission Note</h2>
-                    <p class="text-slate-600">Once submitted, your request will be reviewed by the event organizer. Approved registrations receive a ticket automatically.</p>
+                
+                <!-- User Info Card -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                    <h4 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">Your Information</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Name</span>
+                            <span class="font-medium text-slate-900">{{ $user->name }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Email</span>
+                            <span class="font-medium text-slate-900">{{ $user->email }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Student ID</span>
+                            <span class="font-medium text-slate-900">{{ $user->student_id }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Department</span>
+                            <span class="font-medium text-slate-900">{{ $user->department ?? 'Not set' }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Phone</span>
+                            <span class="font-medium text-slate-900">{{ $user->phone ?? 'Not set' }}</span>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-kuet-700 px-6 py-3 text-white shadow-lg shadow-kuet-500/20 hover:bg-kuet-800">Submit Registration Request</button>
-            </form>
+            <!-- Registration Form -->
+            <div class="lg:col-span-3">
+                <form action="{{ route('registrations.store', $event) }}" method="POST" class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                    <div class="p-8">
+                        <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-kuet-100 text-kuet-600 flex items-center justify-center text-sm font-bold">1</span>
+                            Confirm Your Details
+                        </h2>
+                        
+                        @csrf
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Department <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="department" value="{{ old('department', $user->department) }}" required
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:bg-white input-focus transition-all"
+                                    placeholder="e.g., CSE">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Phone Number <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" required
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:bg-white input-focus transition-all"
+                                    placeholder="e.g., +880 1XXX-XXXXXX">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 rounded-xl bg-blue-50 border border-blue-100">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                                <div>
+                                    <p class="text-sm font-semibold text-blue-900">What happens next?</p>
+                                    <p class="text-sm text-blue-700 mt-1">Once submitted, your request will be reviewed by the event organizer. Approved registrations receive a digital ticket automatically.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="px-8 py-6 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <a href="{{ route('events.show', $event) }}" class="text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors">
+                            Cancel registration
+                        </a>
+                        <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-kuet-600 to-kuet-700 text-white text-sm font-semibold hover:from-kuet-700 hover:to-kuet-800 transition-all shadow-lg shadow-kuet-500/20 btn-shine flex items-center gap-2">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Registration Request
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

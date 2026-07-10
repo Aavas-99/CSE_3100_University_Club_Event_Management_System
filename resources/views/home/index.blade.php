@@ -115,14 +115,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
-        <span class="text-xs font-medium tracking-wider uppercase">Scroll to explore</span>
-        <div class="w-6 h-10 rounded-full border-2 border-slate-600 flex justify-center pt-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-kuet-400 animate-bounce"></div>
-        </div>
-    </div>
 </section>
 
 <!-- About Section -->
