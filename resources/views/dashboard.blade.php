@@ -129,10 +129,26 @@
                                         {{ $registration->registration_status }}
                                     </span>
                                 </div>
-                                <p class="text-xs text-slate-400 mt-2">
-                                    <i class="fas fa-clock mr-1"></i>
-                                    {{ $registration->registration_date }}
-                                </p>
+                                
+                                <!-- Bottom row: date + ticket actions -->
+                                <div class="flex items-center justify-between mt-2">
+                                    <p class="text-xs text-slate-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        {{ $registration->registration_date }}
+                                    </p>
+                                    @if($registration->registration_status === 'Approved' && $registration->ticket)
+                                        <div class="flex items-center gap-3">
+                                            <a href="{{ route('tickets.show', $registration->ticket) }}" 
+                                               class="text-xs font-semibold text-kuet-700 hover:text-kuet-800 flex items-center gap-1 transition-colors">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            <a href="{{ route('tickets.download', $registration->ticket) }}" 
+                                               class="text-xs font-semibold text-kuet-700 hover:text-kuet-800 flex items-center gap-1 transition-colors">
+                                                <i class="fas fa-download"></i> PDF
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         @empty
                             <div class="p-12 text-center">

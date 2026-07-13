@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Registration;
 use App\Models\Ticket;
+use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RegistrationController extends Controller
 {
+    protected TicketService $ticketService;
+
+    public function __construct(TicketService $ticketService)
+    {
+        $this->ticketService = $ticketService;
+    }
+
     public function create(Event $event)
     {
         $user = Auth::user();
@@ -87,19 +95,18 @@ class RegistrationController extends Controller
             $registration->ticket_number = 'EV' . now()->format('Ymd') . str_pad((string) ($registration->id), 4, '0', STR_PAD_LEFT);
             $registration->save();
 
-            Ticket::create([
-                'registration_id' => $registration->id,
-                'qr_code' => 'QR-' . $registration->id,
-                'issued_at' => now(),
-            ]);
+            // Generate QR + PDF Ticket automatically
+            $ticket = $this->ticketService->generateTicket($registration);
 
             $registration->event->decrement('remaining_seats');
+
+            return back()->with('success', 'Registration approved! Ticket generated: ' . $registration->ticket_number);
         } else {
             $registration->registration_status = 'Waitlisted';
             $registration->save();
-        }
 
-        return back()->with('success', 'Registration request processed successfully.');
+            return back()->with('warning', 'Event is full. Registration moved to waitlist.');
+        }
     }
 
     public function reject(Registration $registration)
@@ -122,5 +129,29 @@ class RegistrationController extends Controller
         $registration->save();
 
         return back()->with('success', 'Registration request rejected.');
+    }
+
+    
+    // Download ticket PDF for a registration
+    public function downloadTicket(Registration $registration)
+    {
+        $user = Auth::user();
+        
+        // Only the ticket owner or an admin/organizer can download
+        if (!$user || (
+            $user->id !== $registration->user_id && 
+            $user->role !== 'admin' && 
+            ($user->role !== 'organizer' || $user->organizerClub?->id !== $registration->event->club_id)
+        )) {
+            abort(403);
+        }
+
+        $ticket = $registration->ticket;
+        
+        if (!$ticket) {
+            return back()->withErrors(['ticket' => 'No ticket found for this registration.']);
+        }
+
+        return $this->ticketService->downloadTicket($ticket);
     }
 }
