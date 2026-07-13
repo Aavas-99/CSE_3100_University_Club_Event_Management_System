@@ -11,7 +11,6 @@ class Club extends Model
     protected $fillable = [
         'name',
         'description',
-        'logo',
         'organizer_id',
         'status',
     ];

@@ -25,7 +25,7 @@
         }
     </script>
 </head>
-<body class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+<body class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative">
     <!-- Background -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950"></div>
     <div class="absolute top-20 right-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
@@ -88,7 +88,6 @@
                         <input type="checkbox" name="remember" class="w-4 h-4 rounded border-slate-600 bg-white/5 text-blue-500 focus:ring-blue-500">
                         Remember me
                     </label>
-                    <a href="#" class="text-sm text-blue-400 hover:text-blue-300 transition-colors">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-sm hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">

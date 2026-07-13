@@ -25,7 +25,7 @@
         }
     </script>
 </head>
-<body class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+<body class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative">
     <!-- Background -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/20 via-slate-950 to-slate-950"></div>
     <div class="absolute top-20 right-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl"></div>

@@ -35,9 +35,8 @@ class AuthController extends Controller
             'role' => ['required', 'in:organizer,student'],
 
             // club fields for organizers
-            'club_name' => ['nullable', 'string', 'max:255'],
-            'club_description' => ['nullable', 'string'],
-            'club_logo' => ['nullable', 'string', 'max:255'],
+            'club_name' => ['required', 'string', 'max:255'],
+            'club_description' => ['required', 'string'],
 
             // Strong password validation
             'password' => [
@@ -61,12 +60,11 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        // If organizer provided club details, create the club and assign organizer_id
-        if ($user->role === 'organizer' && !empty($data['club_name'])) {
+        // If organizer, create the club
+        if ($user->role === 'organizer') {
             \App\Models\Club::create([
                 'name' => $data['club_name'],
-                'description' => $data['club_description'] ?? null,
-                'logo' => $data['club_logo'] ?? null,
+                'description' => $data['club_description'],
                 'organizer_id' => $user->id,
                 'status' => 'active',
             ]);

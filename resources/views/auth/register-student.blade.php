@@ -25,7 +25,7 @@
         }
     </script>
 </head>
-<body class="min-h-screen bg-slate-950 py-12 px-4 relative overflow-hidden">
+<body class="min-h-screen bg-slate-950 py-12 px-4 relative">
     <!-- Background -->
     <div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 pointer-events-none"></div>
     <div class="fixed top-20 right-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>

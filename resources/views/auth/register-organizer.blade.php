@@ -24,8 +24,15 @@
             }
         }
     </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        * { scrollbar-width: thin; scrollbar-color: #334155 #0f172a; }
+    </style>
 </head>
-<body class="min-h-screen bg-slate-950 py-12 px-4 relative overflow-hidden">
+<body class="min-h-screen bg-slate-950 py-12 px-4 relative">
     <!-- Background -->
     <div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-kuet-900/20 via-slate-950 to-slate-950 pointer-events-none"></div>
     <div class="fixed top-20 right-20 w-72 h-72 bg-kuet-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -98,19 +105,20 @@
                             class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-kuet-500 focus:ring-1 focus:ring-kuet-500 transition-all">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Club Name</label>
-                        <input type="text" name="club_name" value="{{ old('club_name') }}"
-                            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-kuet-500 focus:ring-1 focus:ring-kuet-500 transition-all">
+                        <label class="block text-sm font-medium text-slate-300 mb-2">
+                            Club Name <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text" name="club_name" value="{{ old('club_name') }}" required
+                            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-kuet-500 focus:ring-1 focus:ring-kuet-500 transition-all"
+                            placeholder="Enter your club name">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Club Description</label>
-                        <textarea name="club_description" rows="3"
-                            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-kuet-500 focus:ring-1 focus:ring-kuet-500 transition-all resize-none">{{ old('club_description') }}</textarea>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Club Logo URL</label>
-                        <input type="text" name="club_logo" value="{{ old('club_logo') }}"
-                            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-kuet-500 focus:ring-1 focus:ring-kuet-500 transition-all">
+                        <label class="block text-sm font-medium text-slate-300 mb-2">
+                            Club Description <span class="text-red-400">*</span>
+                        </label>
+                        <textarea name="club_description" rows="3" required
+                            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-kuet-500 focus:ring-1 focus:ring-kuet-500 transition-all resize-none"
+                            placeholder="Describe your club's purpose and activities">{{ old('club_description') }}</textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-2">Password <span class="text-red-400">*</span></label>
