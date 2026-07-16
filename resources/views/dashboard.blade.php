@@ -17,13 +17,189 @@
                         <p class="text-slate-500 text-sm mt-0.5 capitalize">{{ $user->role }} Dashboard</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-slate-500">
-                    <i class="fas fa-calendar"></i>
-                    {{ now()->format('l, F d, Y') }}
+
+                <!-- Location & Time Tracker Widget -->
+                <div id="location-tracker" class="bg-slate-900 rounded-2xl p-4 shadow-lg min-w-[280px]">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-kuet-500/20 flex items-center justify-center text-kuet-400">
+                            <i class="fas fa-location-dot text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-semibold text-xs">Current Location</h3>
+                            <p class="text-slate-400 text-[10px]">Live tracking</p>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loc-loading" class="text-center py-2">
+                        <i class="fas fa-circle-notch fa-spin text-kuet-400 text-sm"></i>
+                        <p class="text-slate-400 text-[10px] mt-1">Detecting...</p>
+                    </div>
+
+                    <!-- Data Display -->
+                    <div id="loc-data" class="hidden space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 text-[11px]"><i class="fas fa-map-marker-alt mr-1"></i> Location</span>
+                            <span id="loc-city" class="text-white text-xs font-medium">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 text-[11px]"><i class="fas fa-globe mr-1"></i> Country</span>
+                            <span id="loc-country" class="text-white text-xs font-medium">--</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-white/10 pt-2 mt-2">
+                            <span class="text-slate-400 text-[11px]"><i class="fas fa-clock mr-1"></i> Time</span>
+                            <span id="loc-time" class="text-kuet-400 text-sm font-mono font-bold">--:--:--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 text-[11px]"><i class="fas fa-calendar mr-1"></i> Date</span>
+                            <span id="loc-date" class="text-white text-[11px] font-medium">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="loc-error" class="hidden text-center py-2">
+                        <i class="fas fa-triangle-exclamation text-red-400 text-sm mb-1"></i>
+                        <p class="text-red-400 text-[10px]" id="loc-error-msg">Unable to detect</p>
+                        <button onclick="retryLocationTracker()" class="mt-1 text-kuet-400 text-[10px] hover:text-kuet-300 underline">
+                            Retry
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+    (function() {
+        let timeInterval = null;
+        let currentTimezone = 'UTC';
+
+        document.addEventListener('DOMContentLoaded', initLocationTracker);
+
+        function initLocationTracker() {
+            showLoading();
+
+            if ("geolocation" in navigator) {
+                // Auto-allow: request directly. The browser shows its own
+                // native permission popup once; after that it's remembered
+                // per-site. If denied or unsupported, requestGeolocation's
+                // error callback falls back to IP-based lookup.
+                requestGeolocation();
+            } else {
+                useIpFallback();
+            }
+        }
+
+        function requestGeolocation() {
+            showLoading();
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    reverseGeocode(position.coords.latitude, position.coords.longitude);
+                },
+                (error) => {
+                    console.warn('Geolocation error:', error.message);
+                    useIpFallback();
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 600000
+                }
+            );
+        }
+
+        async function reverseGeocode(lat, lon) {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
+                const data = await response.json();
+
+                const city = data.address?.state_district || data.address?.town || data.address?.village || 'Unknown';
+                const country = data.address?.country || 'Unknown';
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                displayLocation(city, country, timezone);
+            } catch (err) {
+                console.warn('Reverse geocode failed, falling back to IP:', err);
+                useIpFallback();
+            }
+        }
+
+        async function useIpFallback() {
+            try {
+                const response = await fetch('https://ipwho.is/');
+                const data = await response.json();
+
+                if (data.success) {
+                    displayLocation(data.city, data.country, data.timezone.id);
+                } else {
+                    throw new Error('IP lookup failed');
+                }
+            } catch (err) {
+                console.error('IP geolocation failed:', err);
+                showError('Unable to detect location. Check connection.');
+            }
+        }
+
+        function displayLocation(city, country, timezone) {
+            currentTimezone = timezone;
+
+            document.getElementById('loc-city').textContent = city;
+            document.getElementById('loc-country').textContent = country;
+
+            document.getElementById('loc-loading').classList.add('hidden');
+            document.getElementById('loc-error').classList.add('hidden');
+            document.getElementById('loc-data').classList.remove('hidden');
+
+            updateDateTime();
+            if (timeInterval) clearInterval(timeInterval);
+            timeInterval = setInterval(updateDateTime, 1000);
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+
+            const timeStr = now.toLocaleTimeString('en-US', {
+                timeZone: currentTimezone,
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            const dateStr = now.toLocaleDateString('en-US', {
+                timeZone: currentTimezone,
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+
+            document.getElementById('loc-time').textContent = timeStr;
+            document.getElementById('loc-date').textContent = dateStr;
+        }
+
+        function showLoading() {
+            document.getElementById('loc-loading').classList.remove('hidden');
+            document.getElementById('loc-data').classList.add('hidden');
+            document.getElementById('loc-error').classList.add('hidden');
+        }
+
+        function showError(msg) {
+            document.getElementById('loc-loading').classList.add('hidden');
+            document.getElementById('loc-data').classList.add('hidden');
+            document.getElementById('loc-error').classList.remove('hidden');
+            document.getElementById('loc-error-msg').textContent = msg;
+        }
+
+        // Expose only what the Retry button needs — functions inside this
+        // IIFE aren't reachable from inline onclick handlers otherwise.
+        window.retryLocationTracker = initLocationTracker;
+
+        window.addEventListener('beforeunload', () => {
+            if (timeInterval) clearInterval(timeInterval);
+        });
+    })();
+    </script>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @include('partials.flash')
@@ -40,7 +216,7 @@
                         ['label' => 'Approved', 'value' => $approvedCount, 'icon' => 'fa-check-circle', 'color' => 'emerald'],
                     ];
                 @endphp
-                
+
                 @foreach($studentStats as $stat)
                     <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all card-lift">
                         <div class="flex items-center justify-between mb-4">
@@ -66,7 +242,7 @@
                             Browse all <i class="fas fa-arrow-right text-xs"></i>
                         </a>
                     </div>
-                    
+
                     <div class="space-y-4">
                         @forelse($upcomingEvents as $event)
                             <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all">
@@ -122,15 +298,14 @@
                                         <h4 class="font-semibold text-slate-900 text-sm truncate">{{ $registration->event->title }}</h4>
                                         <p class="text-xs text-slate-500 mt-1">{{ $registration->event->club->name }}</p>
                                     </div>
-                                    <span class="flex-shrink-0 px-2 py-1 rounded-full text-xs font-bold 
-                                        {{ $registration->registration_status === 'Approved' ? 'bg-emerald-50 text-emerald-700' : 
-                                           ($registration->registration_status === 'Pending' ? 'bg-amber-50 text-amber-700' : 
+                                    <span class="flex-shrink-0 px-2 py-1 rounded-full text-xs font-bold
+                                        {{ $registration->registration_status === 'Approved' ? 'bg-emerald-50 text-emerald-700' :
+                                           ($registration->registration_status === 'Pending' ? 'bg-amber-50 text-amber-700' :
                                            ($registration->registration_status === 'Waitlisted' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-700')) }}">
                                         {{ $registration->registration_status }}
                                     </span>
                                 </div>
-                                
-                                <!-- Bottom row: date + ticket actions -->
+
                                 <div class="flex items-center justify-between mt-2">
                                     <p class="text-xs text-slate-400">
                                         <i class="fas fa-clock mr-1"></i>
@@ -138,11 +313,11 @@
                                     </p>
                                     @if($registration->registration_status === 'Approved' && $registration->ticket)
                                         <div class="flex items-center gap-3">
-                                            <a href="{{ route('tickets.show', $registration->ticket) }}" 
+                                            <a href="{{ route('tickets.show', $registration->ticket) }}"
                                                class="text-xs font-semibold text-kuet-700 hover:text-kuet-800 flex items-center gap-1 transition-colors">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
-                                            <a href="{{ route('tickets.download', $registration->ticket) }}" 
+                                            <a href="{{ route('tickets.download', $registration->ticket) }}"
                                                class="text-xs font-semibold text-kuet-700 hover:text-kuet-800 flex items-center gap-1 transition-colors">
                                                 <i class="fas fa-download"></i> PDF
                                             </a>
@@ -172,7 +347,7 @@
                         ['label' => 'Pending Events', 'value' => $pendingEvents->count(), 'icon' => 'fa-hourglass-half', 'color' => 'purple'],
                     ];
                 @endphp
-                
+
                 @foreach($organizerStats as $stat)
                     <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all card-lift">
                         <div class="flex items-center justify-between mb-4">
@@ -203,7 +378,7 @@
                             <i class="fas fa-plus text-xs"></i> Create Event
                         </a>
                     </div>
-                    
+
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                         @forelse($pendingRegistrations as $registration)
                             <div class="p-5 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
@@ -249,7 +424,7 @@
                         <i class="fas fa-hourglass-half text-purple-500"></i>
                         Pending Event Approvals
                     </h2>
-                    
+
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                         @forelse($pendingEvents as $event)
                             <div class="p-5 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
@@ -282,7 +457,7 @@
                         ['label' => 'Registrations', 'value' => $registrations, 'icon' => 'fa-ticket-alt', 'color' => 'emerald'],
                     ];
                 @endphp
-                
+
                 @foreach($adminStats as $stat)
                     <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all card-lift">
                         <div class="flex items-center justify-between mb-4">
@@ -308,7 +483,7 @@
                             View all <i class="fas fa-arrow-right text-xs"></i>
                         </a>
                     </div>
-                    
+
                     <div class="space-y-4">
                         @forelse($pendingEvents as $event)
                             <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all">
@@ -355,7 +530,7 @@
                         <i class="fas fa-chart-line text-kuet-500"></i>
                         Recent Activity
                     </h2>
-                    
+
                     <!-- Latest Users -->
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                         <div class="px-5 py-4 border-b border-slate-100 bg-slate-50">
