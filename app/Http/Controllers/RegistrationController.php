@@ -74,6 +74,36 @@ class RegistrationController extends Controller
         return redirect()->route('dashboard')->with('success', 'Your registration request has been submitted for organizer review.');
     }
 
+    // Cancel registration method - allows cancellation at any state
+    public function cancel(Registration $registration)
+    {
+        $user = Auth::user();
+
+        if (!$user || $user->role !== 'student') {
+            return redirect()->route('login.student');
+        }
+
+        // Only the registration owner can cancel
+        if ($registration->user_id !== $user->id) {
+            abort(403);
+        }
+
+        // If registration was Approved, restore the seat count
+        if ($registration->registration_status === 'Approved') {
+            $registration->event->increment('remaining_seats');
+        }
+
+        // Delete associated ticket if exists
+        if ($registration->ticket) {
+            $registration->ticket->delete();
+        }
+
+        // Delete the registration
+        $registration->delete();
+
+        return back()->with('success', 'Registration cancelled successfully.');
+    }
+
     public function approve(Registration $registration)
     {
         $user = Auth::user();

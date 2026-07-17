@@ -25,12 +25,18 @@
                     <a href="{{ route('clubs.index') }}" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-kuet-700 hover:bg-kuet-50 transition-all {{ request()->routeIs('clubs.index') ? 'text-kuet-700 bg-kuet-50' : '' }}">
                         Clubs
                     </a>
+                    <a href="{{ route('events.index', ['view' => 'calendar']) }}" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-kuet-700 hover:bg-kuet-50 transition-all {{ request('view') === 'calendar' ? 'text-kuet-700 bg-kuet-50' : '' }}">
+                        Calendar
+                    </a>
                 @else
                     <a href="{{ route('dashboard') }}" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-kuet-700 hover:bg-kuet-50 transition-all {{ request()->routeIs('dashboard') ? 'text-kuet-700 bg-kuet-50' : '' }}">
                         <i class="fas fa-th-large mr-1.5 text-xs"></i>Dashboard
                     </a>
                     <a href="{{ route('events.index') }}" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-kuet-700 hover:bg-kuet-50 transition-all {{ request()->routeIs('events.index') ? 'text-kuet-700 bg-kuet-50' : '' }}">
                         <i class="fas fa-calendar-alt mr-1.5 text-xs"></i>Events
+                    </a>
+                    <a href="{{ route('events.index', ['view' => 'calendar']) }}" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-kuet-700 hover:bg-kuet-50 transition-all {{ request('view') === 'calendar' ? 'text-kuet-700 bg-kuet-50' : '' }}">
+                        <i class="fas fa-calendar-alt mr-1.5 text-xs"></i>Calendar
                     </a>
                     @if(auth()->user()->role === 'organizer')
                         <a href="{{ route('events.create') }}" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-kuet-700 hover:bg-kuet-50 transition-all {{ request()->routeIs('events.create') ? 'text-kuet-700 bg-kuet-50' : '' }}">

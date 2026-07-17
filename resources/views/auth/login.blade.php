@@ -42,6 +42,10 @@
     <div class="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
 
     <div class="relative w-full max-w-md">
+        <!-- Back button to home page -->
+        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm mb-6 transition-colors">
+            <i class="fas fa-arrow-left text-xs"></i> Back to Home
+        </a>
         <!-- Logo -->
         <div class="text-center mb-8">
             <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-kuet-400 to-kuet-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-kuet-500/25 mb-4">

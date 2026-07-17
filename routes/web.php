@@ -59,6 +59,8 @@ Route::get('/events/{event}/register', [RegistrationController::class, 'create']
 Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('registrations.store');
 Route::post('/registrations/{registration}/approve', [RegistrationController::class, 'approve'])->name('registrations.approve');
 Route::post('/registrations/{registration}/reject', [RegistrationController::class, 'reject'])->name('registrations.reject');
+// Cancel registration route for students
+Route::delete('/registrations/{registration}/cancel', [RegistrationController::class, 'cancel'])->name('registrations.cancel');
 
 // Admin Event Approvals
 Route::get('/admin/events/pending', [EventController::class, 'pendingApproval'])->name('admin.events.pending');

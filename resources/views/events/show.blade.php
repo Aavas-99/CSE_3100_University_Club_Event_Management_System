@@ -16,9 +16,26 @@
                         <span class="px-3 py-1 rounded-full bg-kuet-500/20 text-kuet-400 text-xs font-bold border border-kuet-500/30">
                             {{ $event->event_type }}
                         </span>
-                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">
-                            <i class="fas fa-check-circle mr-1"></i>Approved
-                        </span>
+                        <!-- Dynamic status badge - shows real status for admin/organizer, "Approved" for guests/students -->
+                        @auth
+                            @if(auth()->user()->role === 'admin')
+                                <span class="px-3 py-1 rounded-full {{ $event->status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : ($event->status === 'Pending' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30') }} text-xs font-bold border">
+                                    <i class="fas {{ $event->status === 'Approved' ? 'fa-check-circle' : ($event->status === 'Pending' ? 'fa-clock' : 'fa-times-circle') }} mr-1"></i>{{ $event->status }}
+                                </span>
+                            @elseif(auth()->user()->role === 'organizer' && auth()->user()->organizerClub && auth()->user()->organizerClub->id === $event->club_id)
+                                <span class="px-3 py-1 rounded-full {{ $event->status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : ($event->status === 'Pending' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30') }} text-xs font-bold border">
+                                    <i class="fas {{ $event->status === 'Approved' ? 'fa-check-circle' : ($event->status === 'Pending' ? 'fa-clock' : 'fa-times-circle') }} mr-1"></i>{{ $event->status }}
+                                </span>
+                            @else
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">
+                                    <i class="fas fa-check-circle mr-1"></i>Approved
+                                </span>
+                            @endif
+                        @else
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">
+                                <i class="fas fa-check-circle mr-1"></i>Approved
+                            </span>
+                        @endauth
                     </div>
                     <h1 class="text-3xl lg:text-5xl font-bold text-white mb-4">{{ $event->title }}</h1>
                     <div class="flex flex-wrap items-center gap-4 text-slate-400 text-sm">
@@ -138,8 +155,17 @@
                                 </div>
                                 <p class="text-sm font-semibold text-slate-900">Already Registered</p>
                                 <p class="text-xs text-slate-500 mt-1">Status: <span class="font-medium {{ $existingRegistration->registration_status === 'Approved' ? 'text-emerald-600' : ($existingRegistration->registration_status === 'Pending' ? 'text-amber-600' : 'text-red-600') }}">{{ $existingRegistration->registration_status }}</span></p>
+                                
+                                <!-- Cancel button for any state -->
+                                <form method="POST" action="{{ route('registrations.cancel', $existingRegistration) }}" class="mt-3" onsubmit="return confirm('Are you sure you want to cancel this registration?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-700 flex items-center justify-center gap-1 mx-auto transition-colors">
+                                        <i class="fas fa-times-circle"></i> Cancel Registration
+                                    </button>
+                                </form>
                             </div>
-                        @elseif($event->remaining_seats > 0 && $event->registration_deadline >= now()->toDateString())
+                        @elseif($event->remaining_seats > 0 && $event->status === 'Approved' && $event->registration_deadline >= now()->toDateString())
                             <a href="{{ route('registrations.create', $event) }}" class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-kuet-600 to-kuet-700 text-white font-semibold hover:from-kuet-700 hover:to-kuet-800 transition-all shadow-lg shadow-kuet-500/25 btn-shine">
                                 <i class="fas fa-ticket-alt"></i>
                                 Register Now

@@ -80,10 +80,6 @@
             showLoading();
 
             if ("geolocation" in navigator) {
-                // Auto-allow: request directly. The browser shows its own
-                // native permission popup once; after that it's remembered
-                // per-site. If denied or unsupported, requestGeolocation's
-                // error callback falls back to IP-based lookup.
                 requestGeolocation();
             } else {
                 useIpFallback();
@@ -191,8 +187,6 @@
             document.getElementById('loc-error-msg').textContent = msg;
         }
 
-        // Expose only what the Retry button needs — functions inside this
-        // IIFE aren't reachable from inline onclick handlers otherwise.
         window.retryLocationTracker = initLocationTracker;
 
         window.addEventListener('beforeunload', () => {
@@ -265,9 +259,22 @@
                                         <a href="{{ route('events.show', $event) }}" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-all">
                                             Details
                                         </a>
-                                        <a href="{{ route('registrations.create', $event) }}" class="px-4 py-2 rounded-xl border-2 border-kuet-600 text-kuet-700 text-sm font-medium hover:bg-kuet-50 transition-all">
-                                            Register
-                                        </a>
+                                        <!-- Check if student already registered for this event -->
+                                        @php
+                                            $alreadyRegistered = auth()->user()->registrations()->where('event_id', $event->id)->exists();
+                                        @endphp
+                                        @if($alreadyRegistered)
+                                            @php
+                                                $existingReg = auth()->user()->registrations()->where('event_id', $event->id)->first();
+                                            @endphp
+                                            <span class="px-4 py-2 rounded-xl bg-slate-100 text-slate-400 text-sm font-medium cursor-default flex items-center gap-2">
+                                                <i class="fas fa-check"></i> Registered
+                                            </span>
+                                        @else
+                                            <a href="{{ route('registrations.create', $event) }}" class="px-4 py-2 rounded-xl border-2 border-kuet-600 text-kuet-700 text-sm font-medium hover:bg-kuet-50 transition-all">
+                                                Register
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -311,8 +318,8 @@
                                         <i class="fas fa-clock mr-1"></i>
                                         {{ $registration->registration_date }}
                                     </p>
-                                    @if($registration->registration_status === 'Approved' && $registration->ticket)
-                                        <div class="flex items-center gap-3">
+                                    <div class="flex items-center gap-3">
+                                        @if($registration->registration_status === 'Approved' && $registration->ticket)
                                             <a href="{{ route('tickets.show', $registration->ticket) }}"
                                                class="text-xs font-semibold text-kuet-700 hover:text-kuet-800 flex items-center gap-1 transition-colors">
                                                 <i class="fas fa-eye"></i> View
@@ -321,8 +328,16 @@
                                                class="text-xs font-semibold text-kuet-700 hover:text-kuet-800 flex items-center gap-1 transition-colors">
                                                 <i class="fas fa-download"></i> PDF
                                             </a>
-                                        </div>
-                                    @endif
+                                        @endif
+                                        <!-- Cancel button now shown for all registration states -->
+                                        <form method="POST" action="{{ route('registrations.cancel', $registration) }}" class="inline" onsubmit="return confirm('Are you sure you want to cancel this registration? This action cannot be undone.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-700 flex items-center gap-1 transition-colors">
+                                                <i class="fas fa-times-circle"></i> Cancel
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         @empty
