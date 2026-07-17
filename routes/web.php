@@ -7,16 +7,13 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Home
-Route::get('/', function () {
-    return view('home.index');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/home', function () {
-    return view('home.index');
-})->name('home');
+Route::get('/home', [HomeController::class, 'index']);
 
 // Registration
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -51,7 +48,7 @@ Route::post('/profile', [ProfileController::class, 'update'])->name('profile.upd
 // Events
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
-Route::post('/events', [EventController::class, 'store'])->name('events.store');
+Route::post('/events', [EventController::class, 'store'])->middleware(\App\Http\Middleware\ValidateEventDates::class)->name('events.store');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 // Registrations

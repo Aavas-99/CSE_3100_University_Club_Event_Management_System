@@ -38,9 +38,9 @@ class ProfileController extends Controller
 
         if ($user->role !== 'admin') {
             $rules = array_merge($rules, [
-                'student_id' => ['nullable', 'string', 'max:50'],
-                'department' => ['nullable', 'string', 'max:100'],
-                'phone' => ['nullable', 'string', 'max:20'],
+                'student_id' => ['required', 'string', 'max:50'],
+                'department' => ['required', 'string', 'max:100'],
+                'phone' => ['required', 'string', 'max:20'],
             ]);
         }
 

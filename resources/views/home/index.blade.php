@@ -50,15 +50,15 @@
                 <!-- Stats -->
                 <div class="flex gap-8 pt-4">
                     <div>
-                        <p class="text-3xl font-bold text-white">150+</p>
+                        <p class="text-3xl font-bold text-white">{{ $eventsHosted }}</p>
                         <p class="text-sm text-slate-500">Events Hosted</p>
                     </div>
                     <div>
-                        <p class="text-3xl font-bold text-white">25+</p>
+                        <p class="text-3xl font-bold text-white">{{ $activeClubs }}</p>
                         <p class="text-sm text-slate-500">Active Clubs</p>
                     </div>
                     <div>
-                        <p class="text-3xl font-bold text-white">5K+</p>
+                        <p class="text-3xl font-bold text-white">{{ $students }}</p>
                         <p class="text-sm text-slate-500">Students</p>
                     </div>
                 </div>
@@ -84,25 +84,28 @@
                         <!-- Event items -->
                         <div class="space-y-3">
                             @php
-                                $sampleEvents = [
-                                    ['title' => 'Tech Fest 2026', 'club' => 'CSE Club', 'date' => 'Mar 15', 'color' => 'kuet'],
-                                    ['title' => 'Robotics Workshop', 'club' => 'EEE Club', 'date' => 'Mar 18', 'color' => 'blue'],
-                                    ['title' => 'Cultural Night', 'club' => 'Arts Club', 'date' => 'Mar 20', 'color' => 'purple'],
-                                ];
+                                $colors = ['kuet', 'blue', 'purple', 'emerald', 'orange', 'red'];
                             @endphp
                             
-                            @foreach($sampleEvents as $event)
-                                <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer group">
-                                    <div class="w-12 h-12 rounded-xl bg-{{ $event['color'] }}-500/20 flex items-center justify-center text-{{ $event['color'] }}-400 group-hover:scale-110 transition-transform">
+                            @forelse($upcomingEvents as $index => $event)
+                                @php
+                                    $color = $colors[$index % count($colors)];
+                                @endphp
+                                <a href="{{ route('events.show', $event) }}" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+                                    <div class="w-12 h-12 rounded-xl bg-{{ $color }}-500/20 flex items-center justify-center text-{{ $color }}-400 group-hover:scale-110 transition-transform">
                                         <i class="fas fa-calendar-day"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <h4 class="text-white font-medium text-sm truncate">{{ $event['title'] }}</h4>
-                                        <p class="text-slate-400 text-xs">{{ $event['club'] }}</p>
+                                        <h4 class="text-white font-medium text-sm truncate">{{ $event->title }}</h4>
+                                        <p class="text-slate-400 text-xs">{{ $event->club->name ?? 'Unknown Club' }}</p>
                                     </div>
-                                    <span class="text-slate-500 text-xs font-medium">{{ $event['date'] }}</span>
+                                    <span class="text-slate-500 text-xs font-medium">{{ \Carbon\Carbon::parse($event->event_date)->format('M d') }}</span>
+                                </a>
+                            @empty
+                                <div class="text-center py-4">
+                                    <p class="text-slate-400 text-sm">No upcoming events right now.</p>
                                 </div>
-                            @endforeach
+                            @endforelse
                         </div>
                         
                         <!-- CTA -->

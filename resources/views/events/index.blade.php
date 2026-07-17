@@ -321,9 +321,9 @@
                                 }
                             },
                             eventDidMount: function(info) {
-                                info.el.title = info.event.title + '\\n' +
-                                    'Club: ' + (info.event.extendedProps.club || 'N/A') + '\\n' +
-                                    'Venue: ' + (info.event.extendedProps.venue || 'N/A') + '\\n' +
+                                info.el.title = info.event.title + '\n' +
+                                    'Club: ' + (info.event.extendedProps.club || 'N/A') + '\n' +
+                                    'Venue: ' + (info.event.extendedProps.venue || 'N/A') + '\n' +
                                     'Status: ' + (info.event.extendedProps.status || 'N/A');
                             },
                             height: 'auto',

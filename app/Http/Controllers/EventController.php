@@ -95,30 +95,9 @@ class EventController extends Controller
         // Prepare calendar events data for smart calendar view
         $calendarEvents = [];
         if ($request->get('view') === 'calendar') {
-            $calendarQuery = Event::with('club');
-
-            // Apply same auth-based filtering for calendar
-            if (Auth::check()) {
-                $user = Auth::user();
-                if ($user->role === 'admin') {
-                    // Show all
-                } elseif ($user->role === 'organizer') {
-                    $clubId = $user->organizerClub?->id;
-                    if ($clubId) {
-                        $calendarQuery->where(function ($q) use ($clubId) {
-                            $q->where('status', 'Approved')
-                              ->orWhere('club_id', $clubId);
-                        });
-                    } else {
-                        $calendarQuery->where('status', 'Approved');
-                    }
-                } else {
-                    $calendarQuery->where('status', 'Approved');
-                }
-            } else {
-                $calendarQuery->where('status', 'Approved');
-            }
-
+            // Clone the main query before it was paginated (but it has orders, which is fine)
+            // so that all filters (status, search, club) apply to the calendar as well.
+            $calendarQuery = clone $query;
             $allCalendarEvents = $calendarQuery->get();
 
             foreach ($allCalendarEvents as $evt) {

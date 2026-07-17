@@ -4,7 +4,7 @@
     <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div class="grid md:grid-cols-3 lg:grid-cols-3 gap-12">
             <!-- Brand -->
             <div class="lg:col-span-1">
                 <div class="flex items-center gap-3 mb-6">
@@ -17,20 +17,6 @@
                 <p class="text-slate-400 text-sm leading-relaxed mb-6">
                     The official platform for managing and discovering events at Khulna University of Engineering & Technology.
                 </p>
-                <div class="flex gap-3">
-                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
-                        <i class="fab fa-facebook-f text-sm"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
-                        <i class="fab fa-twitter text-sm"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
-                        <i class="fab fa-linkedin-in text-sm"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-kuet-600 flex items-center justify-center transition-all hover:scale-110">
-                        <i class="fab fa-github text-sm"></i>
-                    </a>
-                </div>
             </div>
             
             <!-- Quick Links -->
@@ -41,17 +27,6 @@
                     <li><a href="{{ route('clubs.index') }}" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Clubs</a></li>
                     <li><a href="{{ route('register') }}" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Register</a></li>
                     <li><a href="{{ route('login') }}" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Sign In</a></li>
-                </ul>
-            </div>
-            
-            <!-- Resources -->
-            <div>
-                <h4 class="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Resources</h4>
-                <ul class="space-y-3">
-                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Help Center</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">API Documentation</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Privacy Policy</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-kuet-400 text-sm transition-colors">Terms of Service</a></li>
                 </ul>
             </div>
             
