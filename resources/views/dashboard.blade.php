@@ -460,8 +460,100 @@
                 </div>
             </div>
 
+            <!-- All Events & Registered Students -->
+            <div class="mt-8 space-y-6">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-list-alt text-blue-500"></i>
+                    All Events & Registered Students
+                </h2>
+
+                <div class="space-y-6">
+                    @forelse($allEvents as $event)
+                        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg transition-all hover:bg-slate-50/80">
+                            <!-- Event Details Header -->
+                            <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/30">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="px-2 py-0.5 rounded-md text-xs font-bold {{ $event->status === 'Approved' ? 'bg-emerald-50 text-emerald-700' : ($event->status === 'Pending' ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700') }}">
+                                            {{ $event->status }}
+                                        </span>
+                                        <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-xs font-bold">{{ $event->event_type }}</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-slate-900">{{ $event->title }}</h3>
+                                    <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 mt-2">
+                                        <span class="flex items-center gap-1"><i class="fas fa-calendar text-xs"></i> {{ $event->event_date->format('M d, Y') }} ({{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }})</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt text-xs"></i> {{ $event->venue }}</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-chair text-xs"></i> {{ $event->remaining_seats }} / {{ $event->seat_limit }} seats available</span>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <a href="{{ route('events.show', $event) }}" class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 hover:text-kuet-600 transition-colors flex items-center gap-2 shadow-sm">
+                                        <i class="fas fa-external-link-alt"></i> View Event Page
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Registered Students List -->
+                            <div class="p-6">
+                                <h4 class="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                    <i class="fas fa-users text-slate-400"></i> Registered Students ({{ $event->registrations->count() }})
+                                </h4>
+                                @if($event->registrations->count() > 0)
+                                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        @foreach($event->registrations as $reg)
+                                            <div class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 bg-white hover:border-blue-200 hover:bg-blue-50/50 transition-colors group cursor-default">
+                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 group-hover:from-blue-100 group-hover:to-blue-200 flex items-center justify-center text-slate-600 group-hover:text-blue-700 font-bold flex-shrink-0 transition-colors">
+                                                    {{ strtoupper(substr($reg->user->name, 0, 1)) }}
+                                                </div>
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="text-sm font-semibold text-slate-900 truncate group-hover:text-blue-900 transition-colors">{{ $reg->user->name }}</p>
+                                                    <p class="text-xs text-slate-500 truncate">{{ $reg->user->department ?? 'N/A' }} &bull; {{ $reg->user->student_id ?? 'N/A' }}</p>
+                                                </div>
+                                                <div class="flex-shrink-0">
+                                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $reg->registration_status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : ($reg->registration_status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700') }}">
+                                                        {{ $reg->registration_status }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <div class="text-center py-8 bg-slate-50/50 rounded-xl border border-slate-100 border-dashed">
+                                        <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                                            <i class="fas fa-user-slash text-slate-400"></i>
+                                        </div>
+                                        <p class="text-sm font-medium text-slate-600">No registrations yet</p>
+                                        <p class="text-xs text-slate-400 mt-1">Students registered for this event will appear here.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                                <i class="fas fa-calendar text-2xl text-slate-400"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2">No events created</h3>
+                            <p class="text-slate-500 text-sm">Create an event to see it here along with its registrations.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
         @else
             <!-- Admin Dashboard -->
+            
+            <!-- Tab Navigation -->
+            <div class="mb-8 border-b border-slate-200">
+                <nav class="flex gap-6 overflow-x-auto">
+                    <a href="{{ route('dashboard', ['tab' => 'overview']) }}" class="pb-4 text-sm font-medium border-b-2 transition-colors {{ $tab === 'overview' ? 'border-kuet-600 text-kuet-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }}"><i class="fas fa-chart-pie mr-1"></i> Overview</a>
+                    <a href="{{ route('dashboard', ['tab' => 'clubs']) }}" class="pb-4 text-sm font-medium border-b-2 transition-colors {{ $tab === 'clubs' ? 'border-kuet-600 text-kuet-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }}"><i class="fas fa-building mr-1"></i> Clubs</a>
+                    <a href="{{ route('dashboard', ['tab' => 'students']) }}" class="pb-4 text-sm font-medium border-b-2 transition-colors {{ $tab === 'students' ? 'border-kuet-600 text-kuet-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }}"><i class="fas fa-users mr-1"></i> Students</a>
+                    <a href="{{ route('dashboard', ['tab' => 'events']) }}" class="pb-4 text-sm font-medium border-b-2 transition-colors {{ $tab === 'events' ? 'border-kuet-600 text-kuet-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }}"><i class="fas fa-calendar-alt mr-1"></i> Events</a>
+                </nav>
+            </div>
+
+            @if($tab === 'overview')
             <!-- Stats Row -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 @php
@@ -606,6 +698,13 @@
                     </div>
                 </div>
             </div>
+            @elseif($tab === 'clubs')
+                @include('admin.tabs.clubs')
+            @elseif($tab === 'students')
+                @include('admin.tabs.students')
+            @elseif($tab === 'events')
+                @include('admin.tabs.events')
+            @endif
         @endif
     </div>
 </div>

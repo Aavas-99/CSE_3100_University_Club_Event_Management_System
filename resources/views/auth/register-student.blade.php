@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="//unpkg.com/alpinejs" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -99,13 +100,23 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-2">Password <span class="text-red-400">*</span></label>
-                        <input type="password" name="password" required
-                            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                        <div class="relative" x-data="{ show: false }">
+                            <input :type="show ? 'text' : 'password'" name="password" required
+                                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all pr-12">
+                            <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
+                                <i class="fas" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-slate-300 mb-2">Confirm Password <span class="text-red-400">*</span></label>
-                        <input type="password" name="password_confirmation" required
-                            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                        <div class="relative" x-data="{ show: false }">
+                            <input :type="show ? 'text' : 'password'" name="password_confirmation" required
+                                class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all pr-12">
+                            <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
+                                <i class="fas" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </button>
+                        </div>
                         <p class="text-xs text-slate-500 mt-1">Min 8 chars: uppercase, lowercase, number & symbol</p>
                     </div>
                 </div>

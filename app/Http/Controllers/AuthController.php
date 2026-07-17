@@ -35,8 +35,8 @@ class AuthController extends Controller
             'role' => ['required', 'in:organizer,student'],
 
             // club fields for organizers
-            'club_name' => ['required', 'string', 'max:255'],
-            'club_description' => ['required', 'string'],
+            'club_name' => ['required_if:role,organizer', 'nullable', 'string', 'max:255'],
+            'club_description' => ['required_if:role,organizer', 'nullable', 'string'],
 
             // Strong password validation
             'password' => [
