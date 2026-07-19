@@ -40,11 +40,11 @@
                     </li>
                     <li class="flex items-center gap-3 text-slate-400 text-sm">
                         <i class="fas fa-phone text-kuet-500"></i>
-                        <span>+880 41-769468</span>
+                        <span>+8801540184727</span>
                     </li>
                     <li class="flex items-center gap-3 text-slate-400 text-sm">
                         <i class="fas fa-envelope text-kuet-500"></i>
-                        <span>support@kuet.ac.bd</span>
+                        <span>admin@kuet.ems</span>
                     </li>
                 </ul>
             </div>

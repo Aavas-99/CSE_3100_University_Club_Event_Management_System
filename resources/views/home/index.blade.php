@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="relative min-h-screen flex items-center overflow-hidden bg-slate-950">
+<section class="relative overflow-hidden bg-slate-950">
     <!-- Animated Background -->
     <div class="absolute inset-0">
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-kuet-900/40 via-slate-950 to-slate-950"></div>
@@ -17,7 +17,7 @@
         <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-32 lg:pt-20">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             <!-- Left Content -->
             <div class="space-y-8 animate-slide-up">
@@ -170,27 +170,42 @@
             </p>
         </div>
         
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @php
-                $features = [
-                    ['icon' => 'fa-compass', 'title' => 'Event Discovery', 'desc' => 'Browse all upcoming events with advanced filtering by category, date, and club.', 'color' => 'kuet'],
-                    ['icon' => 'fa-ticket-alt', 'title' => 'Easy Registration', 'desc' => 'One-click event registration with digital tickets and QR code check-ins.', 'color' => 'blue'],
-                    ['icon' => 'fa-calendar-check', 'title' => 'Smart Calendar', 'desc' => 'Personal event calendar with reminders and schedule management.', 'color' => 'purple'],
-                    ['icon' => 'fa-clipboard-check', 'title' => 'Approval Workflow', 'desc' => 'Streamlined event approval process from submission to publication.', 'color' => 'emerald'],
-                    ['icon' => 'fa-chart-line', 'title' => 'Analytics Dashboard', 'desc' => 'Comprehensive insights on event performance and participation trends.', 'color' => 'orange'],
-                    ['icon' => 'fa-bell', 'title' => 'Real-time Notifications', 'desc' => 'Instant alerts for approvals, reminders, and event updates.', 'color' => 'red'],
-                ];
-            @endphp
-            
-            @foreach($features as $feature)
-                <div class="group p-6 bg-white rounded-2xl border border-slate-200 hover:border-{{ $feature['color'] }}-200 hover:shadow-lg hover:shadow-{{ $feature['color'] }}-500/5 transition-all duration-300 card-lift">
-                    <div class="w-12 h-12 rounded-xl bg-{{ $feature['color'] }}-50 text-{{ $feature['color'] }}-600 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas {{ $feature['icon'] }}"></i>
+        <style>
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        </style>
+        <div class="relative w-full">
+            <div id="features-carousel" class="flex overflow-x-auto gap-6 pt-6 pb-12 px-2 -mx-2 snap-x snap-mandatory hide-scrollbar scroll-smooth">
+                @php
+                    $features = [
+                        ['icon' => 'fa-compass', 'title' => 'Event Discovery', 'desc' => 'Browse all upcoming events with advanced filtering by category, date, and club.', 'color' => 'kuet'],
+                        ['icon' => 'fa-ticket-alt', 'title' => 'Easy Registration', 'desc' => 'One-click event registration with digital tickets and QR code check-ins.', 'color' => 'blue'],
+                        ['icon' => 'fa-calendar-check', 'title' => 'Smart Calendar', 'desc' => 'Personal event calendar with reminders and schedule management.', 'color' => 'purple'],
+                        ['icon' => 'fa-clipboard-check', 'title' => 'Approval Workflow', 'desc' => 'Streamlined event approval process from submission to publication.', 'color' => 'emerald'],
+                        ['icon' => 'fa-chart-line', 'title' => 'Analytics Dashboard', 'desc' => 'Comprehensive insights on event performance and participation trends.', 'color' => 'orange'],
+                    ];
+                @endphp
+                
+                @foreach($features as $feature)
+                    <div class="flex-none w-[85%] sm:w-[350px] snap-center group p-6 bg-white hover:bg-{{ $feature['color'] }}-600 rounded-2xl border border-slate-200 hover:border-{{ $feature['color'] }}-600 hover:shadow-xl hover:shadow-{{ $feature['color'] }}-500/25 transition-all duration-300 card-lift">
+                        <div class="w-12 h-12 rounded-xl bg-{{ $feature['color'] }}-50 group-hover:bg-white text-{{ $feature['color'] }}-600 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                            <i class="fas {{ $feature['icon'] }}"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-white mb-2 transition-colors duration-300">{{ $feature['title'] }}</h3>
+                        <p class="text-slate-500 group-hover:text-{{ $feature['color'] }}-100 text-sm leading-relaxed transition-colors duration-300">{{ $feature['desc'] }}</p>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">{{ $feature['title'] }}</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">{{ $feature['desc'] }}</p>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
+            
+            <!-- Carousel Controls -->
+            <div class="flex justify-center gap-3 mt-4">
+                <button onclick="document.getElementById('features-carousel').scrollBy({left: -350, behavior: 'smooth'})" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:text-kuet-600 transition-colors shadow-sm">
+                    <i class="fas fa-chevron-left text-sm"></i>
+                </button>
+                <button onclick="document.getElementById('features-carousel').scrollBy({left: 350, behavior: 'smooth'})" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:text-kuet-600 transition-colors shadow-sm">
+                    <i class="fas fa-chevron-right text-sm"></i>
+                </button>
+            </div>
         </div>
     </div>
 </section>
@@ -283,8 +298,8 @@
         <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             @php
                 $contacts = [
-                    ['icon' => 'fa-envelope', 'title' => 'Email', 'info' => 'support@kuet.ac.bd', 'color' => 'kuet'],
-                    ['icon' => 'fa-phone', 'title' => 'Phone', 'info' => '+880 41-769468', 'color' => 'blue'],
+                    ['icon' => 'fa-envelope', 'title' => 'Email', 'info' => 'admin@kuet.ems', 'color' => 'kuet'],
+                    ['icon' => 'fa-phone', 'title' => 'Phone', 'info' => '+8801540184727', 'color' => 'blue'],
                     ['icon' => 'fa-map-marker-alt', 'title' => 'Location', 'info' => 'KUET, Khulna-9203', 'color' => 'purple'],
                 ];
             @endphp

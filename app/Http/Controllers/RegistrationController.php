@@ -56,12 +56,12 @@ class RegistrationController extends Controller
 
         $request->validate([
             'phone' => ['required', 'string', 'max:20'],
-            'department' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
         ]);
 
         $user->update([
             'phone' => $request->phone,
-            'department' => $request->department,
+            'email' => $request->email,
         ]);
 
         $registration = Registration::create([

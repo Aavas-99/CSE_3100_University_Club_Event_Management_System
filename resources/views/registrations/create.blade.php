@@ -110,11 +110,11 @@
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Department <span class="text-red-500">*</span>
+                                    Email <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" name="department" value="{{ old('department', $user->department) }}" required
+                                <input type="email" name="email" value="{{ old('email', $user->email) }}" required
                                     class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:bg-white input-focus transition-all"
-                                    placeholder="e.g., CSE">
+                                    placeholder="e.g., student@kuet.ac.bd">
                             </div>
                             
                             <div>

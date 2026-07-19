@@ -221,6 +221,17 @@
                         <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
                     </div>
 
+                    <div class="relative">
+                        <i class="fas fa-clock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <select name="time_filter" class="pl-10 pr-10 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:bg-white input-focus appearance-none cursor-pointer min-w-[140px]">
+                            <option value="">Any Time</option>
+                            <option value="upcoming" {{ request('time_filter') === 'upcoming' ? 'selected' : '' }}>Upcoming</option>
+                            <option value="ongoing" {{ request('time_filter') === 'ongoing' ? 'selected' : '' }}>Ongoing</option>
+                            <option value="ended" {{ request('time_filter') === 'ended' ? 'selected' : '' }}>Ended</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                    </div>
+
                     <button type="submit" class="px-6 py-3 rounded-xl bg-kuet-600 text-white text-sm font-semibold hover:bg-kuet-700 transition-all flex items-center gap-2 shadow-lg shadow-kuet-500/20">
                         <i class="fas fa-filter text-xs"></i>
                         Filter
@@ -236,7 +247,7 @@
             </form>
 
             <!-- Active filters display -->
-            @if(request()->hasAny(['search', 'club_id', 'event_type']))
+            @if(request()->hasAny(['search', 'club_id', 'event_type', 'time_filter']))
                 <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-100">
                     <span class="text-xs text-slate-500 font-medium">Active filters:</span>
                     @if(request('search'))
@@ -255,6 +266,12 @@
                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-medium border border-purple-100">
                             Type: {{ request('event_type') }}
                             <a href="{{ route('events.index', array_diff_key(request()->all(), ['event_type' => ''])) }}" class="hover:text-purple-900"><i class="fas fa-times"></i></a>
+                        </span>
+                    @endif
+                    @if(request('time_filter'))
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-medium border border-amber-100">
+                            Time: {{ ucfirst(request('time_filter')) }}
+                            <a href="{{ route('events.index', array_diff_key(request()->all(), ['time_filter' => ''])) }}" class="hover:text-amber-900"><i class="fas fa-times"></i></a>
                         </span>
                     @endif
                 </div>
@@ -504,7 +521,25 @@
                                     Details
                                     <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
-                                @if($event->remaining_seats > 0 && $event->status === 'Approved')
+                                @php
+                                    $isEnded = $event->event_date->toDateString() < now()->toDateString() || ($event->event_date->toDateString() == now()->toDateString() && \Carbon\Carbon::parse($event->end_time)->toTimeString() < now()->toTimeString());
+                                    $alreadyRegistered = auth()->check() ? auth()->user()->registrations()->where('event_id', $event->id)->first() : null;
+                                @endphp
+                                @if($isEnded)
+                                    <span class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 text-slate-500 text-sm font-medium cursor-not-allowed">
+                                        Ended
+                                    </span>
+                                @elseif($alreadyRegistered)
+                                    @if($alreadyRegistered->registration_status === 'Approved' && $alreadyRegistered->ticket)
+                                        <a href="{{ route('tickets.show', $alreadyRegistered->ticket) }}" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-emerald-500 text-emerald-600 text-sm font-semibold hover:bg-emerald-50 transition-all">
+                                            View Ticket
+                                        </a>
+                                    @else
+                                        <span class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-slate-200 text-slate-500 text-sm font-semibold cursor-default">
+                                            {{ $alreadyRegistered->registration_status }}
+                                        </span>
+                                    @endif
+                                @elseif($event->remaining_seats > 0 && $event->status === 'Approved')
                                     <a href="{{ route('registrations.create', $event) }}" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-kuet-600 text-kuet-700 text-sm font-semibold hover:bg-kuet-50 transition-all">
                                         Register
                                     </a>

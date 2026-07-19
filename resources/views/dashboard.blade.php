@@ -212,14 +212,14 @@
                 @endphp
 
                 @foreach($studentStats as $stat)
-                    <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all card-lift">
+                    <div class="bg-white hover:bg-{{ $stat['color'] }}-600 rounded-2xl border border-slate-200 hover:border-{{ $stat['color'] }}-600 p-6 hover:shadow-xl hover:shadow-{{ $stat['color'] }}-500/25 transition-all duration-300 card-lift group">
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-{{ $stat['color'] }}-50 flex items-center justify-center text-{{ $stat['color'] }}-600">
+                            <div class="w-10 h-10 rounded-xl bg-{{ $stat['color'] }}-50 group-hover:bg-white flex items-center justify-center text-{{ $stat['color'] }}-600 group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-md">
                                 <i class="fas {{ $stat['icon'] }}"></i>
                             </div>
-                            <span class="text-2xl font-bold text-slate-900">{{ $stat['value'] }}</span>
+                            <span class="text-2xl font-bold text-slate-900 group-hover:text-white transition-colors duration-300">{{ $stat['value'] }}</span>
                         </div>
-                        <p class="text-sm text-slate-500">{{ $stat['label'] }}</p>
+                        <p class="text-sm text-slate-500 group-hover:text-{{ $stat['color'] }}-100 transition-colors duration-300">{{ $stat['label'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -259,21 +259,32 @@
                                         <a href="{{ route('events.show', $event) }}" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-all">
                                             Details
                                         </a>
-                                        <!-- Check if student already registered for this event -->
                                         @php
-                                            $alreadyRegistered = auth()->user()->registrations()->where('event_id', $event->id)->exists();
+                                            $isEnded = $event->event_date->toDateString() < now()->toDateString() || ($event->event_date->toDateString() == now()->toDateString() && \Carbon\Carbon::parse($event->end_time)->toTimeString() < now()->toTimeString());
+                                            $existingReg = auth()->check() ? auth()->user()->registrations()->where('event_id', $event->id)->first() : null;
                                         @endphp
-                                        @if($alreadyRegistered)
-                                            @php
-                                                $existingReg = auth()->user()->registrations()->where('event_id', $event->id)->first();
-                                            @endphp
-                                            <span class="px-4 py-2 rounded-xl bg-slate-100 text-slate-400 text-sm font-medium cursor-default flex items-center gap-2">
-                                                <i class="fas fa-check"></i> Registered
+                                        @if($isEnded)
+                                            <span class="px-4 py-2 rounded-xl bg-slate-100 text-slate-500 text-sm font-medium cursor-not-allowed">
+                                                Ended
                                             </span>
-                                        @else
+                                        @elseif($existingReg)
+                                            @if($existingReg->registration_status === 'Approved' && $existingReg->ticket)
+                                                <a href="{{ route('tickets.show', $existingReg->ticket) }}" class="px-4 py-2 rounded-xl border-2 border-emerald-500 text-emerald-600 text-sm font-semibold hover:bg-emerald-50 transition-all flex items-center gap-2">
+                                                    View Ticket
+                                                </a>
+                                            @else
+                                                <span class="px-4 py-2 rounded-xl bg-slate-100 text-slate-400 text-sm font-medium cursor-default flex items-center gap-2">
+                                                    <i class="fas fa-clock"></i> {{ $existingReg->registration_status }}
+                                                </span>
+                                            @endif
+                                        @elseif($event->remaining_seats > 0 && $event->status === 'Approved')
                                             <a href="{{ route('registrations.create', $event) }}" class="px-4 py-2 rounded-xl border-2 border-kuet-600 text-kuet-700 text-sm font-medium hover:bg-kuet-50 transition-all">
                                                 Register
                                             </a>
+                                        @else
+                                            <span class="px-4 py-2 rounded-xl bg-slate-100 text-slate-400 text-sm font-medium cursor-not-allowed">
+                                                {{ $event->status !== 'Approved' ? 'Not Available' : 'Full' }}
+                                            </span>
                                         @endif
                                     </div>
                                 </div>
@@ -358,25 +369,25 @@
                     $organizerStats = [
                         ['label' => 'Club', 'value' => $club?->name ?? 'N/A', 'icon' => 'fa-building', 'color' => 'kuet', 'isText' => true],
                         ['label' => 'Total Events', 'value' => $eventCount, 'icon' => 'fa-calendar-alt', 'color' => 'blue'],
-                        ['label' => 'Pending Regs', 'value' => $pendingRegistrations->count(), 'icon' => 'fa-user-clock', 'color' => 'amber'],
+                        ['label' => 'Pending Registrations', 'value' => $pendingRegistrations->count(), 'icon' => 'fa-user-clock', 'color' => 'amber'],
                         ['label' => 'Pending Events', 'value' => $pendingEvents->count(), 'icon' => 'fa-hourglass-half', 'color' => 'purple'],
                     ];
                 @endphp
 
                 @foreach($organizerStats as $stat)
-                    <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all card-lift">
+                    <div class="bg-white hover:bg-{{ $stat['color'] }}-600 rounded-2xl border border-slate-200 hover:border-{{ $stat['color'] }}-600 p-6 hover:shadow-xl hover:shadow-{{ $stat['color'] }}-500/25 transition-all duration-300 card-lift group">
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-{{ $stat['color'] }}-50 flex items-center justify-center text-{{ $stat['color'] }}-600">
+                            <div class="w-10 h-10 rounded-xl bg-{{ $stat['color'] }}-50 group-hover:bg-white flex items-center justify-center text-{{ $stat['color'] }}-600 group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-md">
                                 <i class="fas {{ $stat['icon'] }}"></i>
                             </div>
                             @if(!($stat['isText'] ?? false))
-                                <span class="text-2xl font-bold text-slate-900">{{ $stat['value'] }}</span>
+                                <span class="text-2xl font-bold text-slate-900 group-hover:text-white transition-colors duration-300">{{ $stat['value'] }}</span>
                             @endif
                         </div>
                         @if($stat['isText'] ?? false)
-                            <p class="text-lg font-bold text-slate-900 truncate">{{ $stat['value'] }}</p>
+                            <p class="text-lg font-bold text-slate-900 group-hover:text-white truncate transition-colors duration-300">{{ $stat['value'] }}</p>
                         @endif
-                        <p class="text-sm text-slate-500">{{ $stat['label'] }}</p>
+                        <p class="text-sm text-slate-500 group-hover:text-{{ $stat['color'] }}-100 transition-colors duration-300">{{ $stat['label'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -405,7 +416,12 @@
                                         <div class="min-w-0">
                                             <h4 class="font-semibold text-slate-900 text-sm">{{ $registration->user->name }}</h4>
                                             <p class="text-xs text-slate-500 mt-0.5">Event: {{ $registration->event->title }}</p>
-                                            <p class="text-xs text-slate-400">{{ $registration->user->department ?? 'No dept' }}</p>
+                                            <p class="text-xs text-slate-400 truncate max-w-[200px]" title="{{ $registration->user->email }}">
+                                                <i class="fas fa-envelope mr-1"></i>{{ $registration->user->email }}
+                                            </p>
+                                            <p class="text-xs text-slate-400">
+                                                <i class="fas fa-phone mr-1"></i>{{ $registration->user->phone ?? 'No phone' }}
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="flex gap-2 flex-shrink-0">
@@ -507,7 +523,8 @@
                                                 </div>
                                                 <div class="min-w-0 flex-1">
                                                     <p class="text-sm font-semibold text-slate-900 truncate group-hover:text-blue-900 transition-colors">{{ $reg->user->name }}</p>
-                                                    <p class="text-xs text-slate-500 truncate">{{ $reg->user->department ?? 'N/A' }} &bull; {{ $reg->user->student_id ?? 'N/A' }}</p>
+                                                    <p class="text-xs text-slate-500 truncate"><i class="fas fa-envelope mr-1 text-slate-400"></i>{{ $reg->user->email }}</p>
+                                                    <p class="text-xs text-slate-500 truncate mt-0.5"><i class="fas fa-phone mr-1 text-slate-400"></i>{{ $reg->user->phone ?? 'N/A' }} &bull; ID: {{ $reg->user->student_id ?? 'N/A' }}</p>
                                                 </div>
                                                 <div class="flex-shrink-0">
                                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $reg->registration_status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : ($reg->registration_status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700') }}">
@@ -566,14 +583,14 @@
                 @endphp
 
                 @foreach($adminStats as $stat)
-                    <div class="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all card-lift">
+                    <div class="bg-white hover:bg-{{ $stat['color'] }}-600 rounded-2xl border border-slate-200 hover:border-{{ $stat['color'] }}-600 p-6 hover:shadow-xl hover:shadow-{{ $stat['color'] }}-500/25 transition-all duration-300 card-lift group">
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-{{ $stat['color'] }}-50 flex items-center justify-center text-{{ $stat['color'] }}-600">
+                            <div class="w-10 h-10 rounded-xl bg-{{ $stat['color'] }}-50 group-hover:bg-white flex items-center justify-center text-{{ $stat['color'] }}-600 group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-md">
                                 <i class="fas {{ $stat['icon'] }}"></i>
                             </div>
-                            <span class="text-2xl font-bold text-slate-900">{{ $stat['value'] }}</span>
+                            <span class="text-2xl font-bold text-slate-900 group-hover:text-white transition-colors duration-300">{{ $stat['value'] }}</span>
                         </div>
-                        <p class="text-sm text-slate-500">{{ $stat['label'] }}</p>
+                        <p class="text-sm text-slate-500 group-hover:text-{{ $stat['color'] }}-100 transition-colors duration-300">{{ $stat['label'] }}</p>
                     </div>
                 @endforeach
             </div>

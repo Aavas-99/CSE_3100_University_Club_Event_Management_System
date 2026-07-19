@@ -148,22 +148,37 @@
                             $existingRegistration = \App\Models\Registration::where('user_id', auth()->id())->where('event_id', $event->id)->first();
                         @endphp
                         
+                        @php
+                            $isEnded = $event->event_date->toDateString() < now()->toDateString() || ($event->event_date->toDateString() == now()->toDateString() && \Carbon\Carbon::parse($event->end_time)->toTimeString() < now()->toTimeString());
+                        @endphp
+
                         @if($existingRegistration)
                             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
                                 <div class="w-12 h-12 mx-auto rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mb-3">
                                     <i class="fas fa-info-circle text-xl"></i>
                                 </div>
                                 <p class="text-sm font-semibold text-slate-900">Already Registered</p>
-                                <p class="text-xs text-slate-500 mt-1">Status: <span class="font-medium {{ $existingRegistration->registration_status === 'Approved' ? 'text-emerald-600' : ($existingRegistration->registration_status === 'Pending' ? 'text-amber-600' : 'text-red-600') }}">{{ $existingRegistration->registration_status }}</span></p>
+                                <p class="text-xs text-slate-500 mt-1 mb-2">Status: <span class="font-medium {{ $existingRegistration->registration_status === 'Approved' ? 'text-emerald-600' : ($existingRegistration->registration_status === 'Pending' ? 'text-amber-600' : 'text-red-600') }}">{{ $existingRegistration->registration_status }}</span></p>
                                 
+                                @if($existingRegistration->registration_status === 'Approved' && $existingRegistration->ticket)
+                                    <a href="{{ route('tickets.show', $existingRegistration->ticket) }}" class="mt-2 mb-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-all shadow-md">
+                                        <i class="fas fa-ticket-alt"></i> View Ticket
+                                    </a>
+                                @endif
+
                                 <!-- Cancel button for any state -->
-                                <form method="POST" action="{{ route('registrations.cancel', $existingRegistration) }}" class="mt-3" onsubmit="return confirm('Are you sure you want to cancel this registration?');">
+                                <form method="POST" action="{{ route('registrations.cancel', $existingRegistration) }}" class="mt-2" onsubmit="return confirm('Are you sure you want to cancel this registration?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-700 flex items-center justify-center gap-1 mx-auto transition-colors">
                                         <i class="fas fa-times-circle"></i> Cancel Registration
                                     </button>
                                 </form>
+                            </div>
+                        @elseif($isEnded)
+                            <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 text-center">
+                                <i class="fas fa-calendar-times text-slate-500 text-xl mb-2"></i>
+                                <p class="text-sm font-semibold text-slate-700">Event Ended</p>
                             </div>
                         @elseif($event->remaining_seats > 0 && $event->status === 'Approved' && $event->registration_deadline >= now()->toDateString())
                             <a href="{{ route('registrations.create', $event) }}" class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-kuet-600 to-kuet-700 text-white font-semibold hover:from-kuet-700 hover:to-kuet-800 transition-all shadow-lg shadow-kuet-500/25 btn-shine">

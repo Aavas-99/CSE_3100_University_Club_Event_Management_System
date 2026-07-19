@@ -75,6 +75,33 @@ class EventController extends Controller
         })
         ->when($request->filled('event_type'), function ($query) use ($request) {
             $query->where('event_type', $request->event_type);
+        })
+        ->when($request->filled('time_filter'), function ($query) use ($request) {
+            $now = now();
+            $currentDate = $now->toDateString();
+            $currentTime = $now->toTimeString();
+
+            if ($request->time_filter === 'upcoming') {
+                $query->where(function ($q) use ($currentDate, $currentTime) {
+                    $q->where('event_date', '>', $currentDate)
+                      ->orWhere(function($sq) use ($currentDate, $currentTime) {
+                          $sq->where('event_date', '=', $currentDate)
+                             ->where('start_time', '>', $currentTime);
+                      });
+                });
+            } elseif ($request->time_filter === 'ongoing') {
+                $query->where('event_date', '=', $currentDate)
+                      ->where('start_time', '<=', $currentTime)
+                      ->where('end_time', '>=', $currentTime);
+            } elseif ($request->time_filter === 'ended') {
+                $query->where(function ($q) use ($currentDate, $currentTime) {
+                    $q->where('event_date', '<', $currentDate)
+                      ->orWhere(function($sq) use ($currentDate, $currentTime) {
+                          $sq->where('event_date', '=', $currentDate)
+                             ->where('end_time', '<', $currentTime);
+                      });
+                });
+            }
         });
 
         // Sorting
